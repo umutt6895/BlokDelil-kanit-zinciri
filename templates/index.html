@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Menü{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+  <div class="eyebrow d-flex justify-content-center align-items-center gap-2 mb-2">
+    <span class="status-dot"></span> Sistem Aktif
+  </div>
+  <h1 class="brand-title display-5 mb-3">Yaka Kamerası Kriptografik Loglama</h1>
+  <p class="text-muted mx-auto" style="max-width:560px;">
+    Blokzincir mantığıyla her video kaydını imzalayan, zincirleyen ve doğrulayan
+    adli kanıt sistemi. Devam etmek için aşağıdaki modüllerden birini seçin.
+  </p>
+</div>
+
+<div class="row g-4 justify-content-center">
+
+  <!-- Modül 1: Kamera Kayıt -->
+  <div class="col-md-6 col-lg-4">
+    <a href="/kamera-kayit" class="text-decoration-none">
+      <div class="panel-card menu-card h-100">
+        <div class="panel-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/>
+            <circle cx="12" cy="13" r="3.4"/>
+          </svg>
+        </div>
+        <div class="eyebrow">Modül 01</div>
+        <div class="panel-title">Kamera Kayıt</div>
+        <div class="panel-desc">Yeni bir yaka kamerası için RSA anahtar çifti üretir ve genel anahtarı zincire kaydeder.</div>
+        <span class="menu-arrow">Devam et →</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Modül 2: Video Yükle -->
+  <div class="col-md-6 col-lg-4">
+    <a href="/video-yukle" class="text-decoration-none">
+      <div class="panel-card menu-card h-100">
+        <div class="panel-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+          </svg>
+        </div>
+        <div class="eyebrow">Modül 02</div>
+        <div class="panel-title">Video Logu Yükle</div>
+        <div class="panel-desc">Video dosyasını kameranın private key'iyle imzalar ve zincire yeni bir blok olarak ekler.</div>
+        <span class="menu-arrow">Devam et →</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Modül 3: Kanıt Doğrula -->
+  <div class="col-md-6 col-lg-4">
+    <a href="/kanit-dogrula" class="text-decoration-none">
+      <div class="panel-card menu-card h-100">
+        <div class="panel-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="eyebrow">Modül 03</div>
+        <div class="panel-title">Kanıt Doğrula</div>
+        <div class="panel-desc">Şüpheli bir video dosyasının hash'ini hesaplar ve zincirdeki kayıtlarla karşılaştırır.</div>
+        <span class="menu-arrow">Devam et →</span>
+      </div>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

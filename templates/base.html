@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>{% block title %}Ana Menü{% endblock %} · Blokdelil</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Tipografi: Space Grotesk (başlık) / Inter (gövde) / JetBrains Mono (veri-hash) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Alpine.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+
+<!-- htmx -->
+<script defer src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+<style>
+  :root{
+    --bg-deep:#0a0e14;
+    --bg-surface:#121821;
+    --bg-surface-2:#1a222c;
+    --bg-input:#0d1117;
+    --border-subtle:#232c38;
+    --text-primary:#e7ecf2;
+    --text-muted:#8a97a6;
+    --accent-teal:#2fe0c4;
+    --accent-amber:#ffb020;
+    --accent-danger:#ff5a5f;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+
+  *{ box-sizing:border-box; }
+  [x-cloak]{ display:none !important; }
+
+  body{
+    background-color:var(--bg-deep);
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(47,224,196,.06), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(255,176,32,.04), transparent 35%);
+    color:var(--text-primary);
+    font-family:var(--font-body);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  main{ flex:1; }
+
+  :focus-visible{ outline:2px solid var(--accent-teal); outline-offset:2px; }
+
+  /* ---------- Navbar ---------- */
+  .navbar-blok{
+    background:var(--bg-surface);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .eyebrow{
+    font-family:var(--font-mono);
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.7rem;
+    color:var(--text-muted);
+    margin-bottom:.15rem;
+  }
+  .brand-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    letter-spacing:-.02em;
+  }
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent-teal);
+    box-shadow:0 0 0 0 rgba(47,224,196,.5);
+    animation:pulse-dot 2.4s infinite;
+    flex-shrink:0;
+  }
+  @keyframes pulse-dot{
+    0%{ box-shadow:0 0 0 0 rgba(47,224,196,.45); }
+    70%{ box-shadow:0 0 0 8px rgba(47,224,196,0); }
+    100%{ box-shadow:0 0 0 0 rgba(47,224,196,0); }
+  }
+  .stat-pill{
+    background:var(--bg-surface-2);
+    border:1px solid var(--border-subtle);
+    border-radius:999px;
+    padding:.4rem 1rem;
+    font-family:var(--font-mono);
+    font-size:.82rem;
+    color:var(--text-primary);
+    white-space:nowrap;
+  }
+
+  /* ---------- Panel kartları (form kartları) ---------- */
+  .panel-card{
+    background:var(--bg-surface);
+    border:1px solid var(--border-subtle);
+    border-radius:14px;
+    padding:1.5rem;
+    height:100%;
+  }
+  .panel-icon{
+    width:38px;height:38px;
+    border-radius:10px;
+    background:var(--bg-surface-2);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent-teal);
+    margin-bottom:1rem;
+  }
+  .panel-title{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:1.05rem;
+    margin-bottom:.3rem;
+  }
+  .panel-desc{
+    color:var(--text-muted);
+    font-size:.83rem;
+    margin-bottom:1.25rem;
+    line-height:1.45;
+  }
+
+  /* ---------- Ana menü kartları (index.html) ---------- */
+  .menu-card{
+    transition:transform .18s ease, border-color .18s ease;
+    cursor:pointer;
+  }
+  .menu-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--accent-teal);
+  }
+  .menu-arrow{
+    display:inline-block;
+    margin-top:.75rem;
+    font-family:var(--font-mono);
+    font-size:.78rem;
+    color:var(--accent-teal);
+  }
+
+  /* ---------- Form elemanları ---------- */
+  form label{
+    font-family:var(--font-mono);
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--text-muted);
+    margin-bottom:.35rem;
+    display:block;
+  }
+  .form-control{
+    background:var(--bg-input);
+    border:1px solid var(--border-subtle);
+    color:var(--text-primary);
+  }
+  .form-control::placeholder{ color:#4d5967; }
+  .form-control:focus{
+    background:var(--bg-input);
+    border-color:var(--accent-teal);
+    color:var(--text-primary);
+    box-shadow:0 0 0 .2rem rgba(47,224,196,.15);
+  }
+  textarea.form-control{ font-family:var(--font-mono); font-size:.8rem; }
+
+  .btn-chain{
+    /* Bootstrap 5.3, .btn:hover / :active / :disabled durumlarinda
+       rengi kendi --bs-btn-hover-bg gibi degiskenlerinden okur. Bu
+       degiskenleri burada tanimlamazsak Bootstrap'in varsayilani
+       (transparent) devreye girer ve buton hover'da "kayboluyor"
+       gibi gorunur. Cozum: Bootstrap'in okudugu degiskenleri biz
+       set ediyoruz, boylece hover/active/disabled hep teal kalir. */
+    --bs-btn-color:#04211c;
+    --bs-btn-bg:var(--accent-teal);
+    --bs-btn-border-color:var(--accent-teal);
+    --bs-btn-hover-color:#04211c;
+    --bs-btn-hover-bg:var(--accent-teal);
+    --bs-btn-hover-border-color:var(--accent-teal);
+    --bs-btn-active-color:#04211c;
+    --bs-btn-active-bg:var(--accent-teal);
+    --bs-btn-active-border-color:var(--accent-teal);
+    --bs-btn-disabled-color:#04211c;
+    --bs-btn-disabled-bg:var(--accent-teal);
+    --bs-btn-disabled-border-color:var(--accent-teal);
+    --bs-btn-focus-box-shadow:0 0 0 .2rem rgba(47,224,196,.35);
+    font-weight:600;
+    letter-spacing:.02em;
+    transition:filter .15s ease;
+  }
+  .btn-chain:hover{ filter:brightness(1.08); }
+  .btn-chain:disabled{ opacity:.6; }
+
+  .btn-outline-chain{
+    background:transparent;
+    border:1px solid var(--border-subtle);
+    color:var(--text-primary);
+  }
+  .btn-outline-chain:hover{ border-color:var(--accent-teal); color:var(--accent-teal); }
+
+  /* ---------- Private key ifşa kutusu ---------- */
+  .private-key-box{
+    background:var(--bg-surface-2);
+    border:1px dashed var(--accent-amber);
+    border-radius:10px;
+    padding:1rem;
+    margin-top:1rem;
+  }
+  .private-key-box textarea{
+    background:var(--bg-input);
+    color:var(--accent-teal);
+    border:1px solid var(--border-subtle);
+    border-radius:8px;
+  }
+  .warn-label{
+    display:flex;align-items:center;gap:.4rem;
+    color:var(--accent-amber);
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:.6rem;
+  }
+
+  /* ---------- HTMX sonuç banner'ları (gösterişli bildirim kartı) ---------- */
+  .sonuc-banner{
+    display:flex;
+    align-items:center;
+    gap:.9rem;
+    padding:1rem 1.1rem;
+    border-radius:12px;
+    animation:sonuc-belir .25s ease;
+  }
+  @keyframes sonuc-belir{
+    from{ opacity:0; transform:translateY(4px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .sonuc-icon{
+    flex-shrink:0;
+    width:40px;height:40px;
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sonuc-mesaj{
+    font-family:var(--font-mono);
+    font-size:.85rem;
+    font-weight:600;
+    line-height:1.5;
+    color:var(--text-primary);
+  }
+
+  .sonuc-banner-basarili{
+    background:rgba(47,224,196,.09);
+    border:1px solid rgba(47,224,196,.4);
+    box-shadow:0 0 28px -6px rgba(47,224,196,.4);
+  }
+  .sonuc-banner-basarili .sonuc-icon{
+    background:rgba(47,224,196,.16);
+    color:var(--accent-teal);
+  }
+
+  .sonuc-banner-hata{
+    background:rgba(255,90,95,.09);
+    border:1px solid rgba(255,90,95,.45);
+    box-shadow:0 0 28px -6px rgba(255,90,95,.4);
+  }
+  .sonuc-banner-hata .sonuc-icon{
+    background:rgba(255,90,95,.18);
+    color:var(--accent-danger);
+    animation:alarm-titre 1.6s ease-in-out infinite;
+  }
+  @keyframes alarm-titre{
+    0%,100%{ box-shadow:0 0 0 0 rgba(255,90,95,.4); }
+    50%{ box-shadow:0 0 0 7px rgba(255,90,95,0); }
+  }
+
+  .htmx-indicator{ opacity:0; transition:opacity .15s ease; }
+  .htmx-request .htmx-indicator{ opacity:1; }
+  .htmx-request.htmx-indicator{ opacity:1; }
+
+  /* ---------- Zincir defteri (ledger) ---------- */
+  .ledger-wrap{
+    background:var(--bg-surface);
+    border:1px solid var(--border-subtle);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .ledger-head{
+    padding:1.25rem 1.5rem;
+    border-bottom:1px solid var(--border-subtle);
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;
+  }
+  table.ledger{ margin:0; }
+  table.ledger thead th{
+    font-family:var(--font-mono);
+    text-transform:uppercase;
+    font-size:.66rem;
+    letter-spacing:.08em;
+    color:var(--text-muted);
+    border-bottom:1px solid var(--border-subtle);
+    background:var(--bg-surface-2);
+    padding:.85rem 1rem;
+    white-space:nowrap;
+  }
+  table.ledger td{
+    font-family:var(--font-mono);
+    font-size:.8rem;
+    color:var(--text-primary);
+    border-bottom:1px solid var(--border-subtle);
+    padding:.75rem 1rem;
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  table.ledger tr:last-child td{ border-bottom:none; }
+
+  /* Zincir bağlantı rayı: her satırın "blok" oldugunu ve birbirine
+     baglandigini gorsellestiren imza (signature) eleman */
+  .chain-cell{ position:relative; width:30px; }
+  .chain-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--accent-teal);
+    position:relative; z-index:1;
+    box-shadow:0 0 0 3px rgba(47,224,196,.15);
+  }
+  .chain-line{
+    position:absolute; top:-1px; bottom:-1px; left:15px;
+    width:1px; background:var(--border-subtle);
+  }
+  table.ledger tr:first-child .chain-line{ top:50%; }
+  table.ledger tr:last-child .chain-line{ bottom:50%; }
+
+  .hash-pill{ max-width:170px; }
+
+  @media (max-width:991px){
+    .hash-pill{ max-width:120px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;
+    }
+  }
+
+  {% block extra_style %}{% endblock %}
+</style>
+</head>
+<body>
+
+<!-- ============================================================= -->
+<!-- ÜST BAR (tüm sayfalarda ortak)                                 -->
+<!-- ============================================================= -->
+<nav class="navbar-blok px-4 px-lg-5 py-3 d-flex align-items-center justify-content-between flex-wrap gap-3">
+  <div>
+    <div class="eyebrow">Kriptografik Kanıt Zinciri</div>
+    <a href="/" class="brand-title fs-4 text-decoration-none" style="color:inherit;">BLOKDELİL</a>
+  </div>
+  <div class="d-flex align-items-center gap-3 flex-wrap">
+    <div class="d-flex align-items-center gap-2">
+      <span class="status-dot"></span>
+      <span class="eyebrow mb-0">Sistem Aktif</span>
+    </div>
+    {% if request.path != '/' %}
+    <a href="/" class="btn btn-outline-chain btn-sm d-flex align-items-center gap-2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+      </svg>
+      Ana Menüye Dön
+    </a>
+    {% endif %}
+  </div>
+</nav>
+
+<!-- ============================================================= -->
+<!-- SAYFA İÇERİĞİ (her alt şablon burayı doldurur)                 -->
+<!-- ============================================================= -->
+<main class="container py-4 py-lg-5">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="text-center py-4 text-muted" style="font-family:var(--font-mono); font-size:.72rem;">
+  BLOKDELİL — Blokzincir Mantığıyla Kriptografik Loglama Simülasyonu
+</footer>
+
+<!-- ============================================================= -->
+<!-- PAYLAŞILAN JAVASCRIPT (tüm sayfalarda ortak)                   -->
+<!-- ============================================================= -->
+<script>
+  // -------------------------------------------------------------
+  // Alpine.js bileşeni: Kamera Kayıt Formu (kamera.html tarafından
+  // kullanılır). Bu form HTMX ile DEĞİL, Alpine + fetch ile
+  // yönetilir çünkü /api/kamera_ekle endpoint'i JSON döner ve
+  // private_key'in ekranda özel bir kutuda gösterilmesi gerekir.
+  // -------------------------------------------------------------
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('kameraKayit', () => ({
+      kameraId: '',
+      cihazAdi: '',
+      yukleniyor: false,
+      mesaj: '',
+      basarili: false,
+      privateKey: '',
+      kopyalandi: false,
+
+      async gonder() {
+        this.yukleniyor = true;
+        this.mesaj = '';
+        this.privateKey = '';
+        this.kopyalandi = false;
+
+        const formData = new FormData();
+        formData.append('KameraID', this.kameraId);
+        formData.append('CihazAdi', this.cihazAdi);
+
+        try {
+          const cevap = await fetch('/api/kamera_ekle', { method: 'POST', body: formData });
+          const veri = await cevap.json();
+
+          this.basarili = veri.basarili;
+          this.mesaj = veri.mesaj;
+
+          if (veri.basarili) {
+            this.privateKey = veri.private_key;
+            this.kameraId = '';
+            this.cihazAdi = '';
+          }
+        } catch (hata) {
+          this.basarili = false;
+          this.mesaj = 'Sunucuya bağlanılamadı: ' + hata.message;
+        } finally {
+          this.yukleniyor = false;
+        }
+      },
+
+      async kopyala() {
+        try {
+          await navigator.clipboard.writeText(this.privateKey);
+          this.kopyalandi = true;
+          setTimeout(() => { this.kopyalandi = false; }, 2000);
+        } catch (hata) {
+          console.error('Kopyalama başarısız:', hata);
+        }
+      }
+    }));
+  });
+
+  // -------------------------------------------------------------
+  // HTMX sonuç kutularını (yukleme-sonuc / dogrulama-sonuc) durum
+  // koduna göre ikonlu, parlamalı bir bildirim banner'ına dönüştürür.
+  // -------------------------------------------------------------
+  const SONUC_IKON_BASARILI = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>';
+  const SONUC_IKON_HATA = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3L12 3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>';
+
+  document.body.addEventListener('htmx:afterSwap', function (evt) {
+    const hedef = evt.detail.target;
+    if (!hedef || (hedef.id !== 'yukleme-sonuc' && hedef.id !== 'dogrulama-sonuc')) return;
+
+    const durum = evt.detail.xhr.status;
+    const istekBasarili = durum >= 200 && durum < 300;
+    const mesaj = hedef.textContent.trim();
+
+    // ONEMLI: /api/video_dogrula, video orijinal olsun ya da "sahte" cıksın
+    // HER IKI durumda da HTTP 200 doner (dogrulama islemi kendisi basariyla
+    // calisti). Bu yuzden yesil/kirmizi ayrimini HTTP durum kodundan degil,
+    // donen mesajin icinde "Orijinal" gecip gecmedigine bakarak yapiyoruz.
+    const basarili = (hedef.id === 'dogrulama-sonuc' && istekBasarili)
+      ? mesaj.includes('Orijinal')
+      : istekBasarili;
+
+    // Bootstrap'in mt-3 (ust bosluk) class'ini koruyup, gorsel
+    // banner class'larini ekliyoruz.
+    hedef.className = 'mt-3 sonuc-banner ' + (basarili ? 'sonuc-banner-basarili' : 'sonuc-banner-hata');
+    hedef.innerHTML =
+      '<div class="sonuc-icon">' + (basarili ? SONUC_IKON_BASARILI : SONUC_IKON_HATA) + '</div>' +
+      '<div class="sonuc-mesaj">' + mesaj + '</div>';
+  });
+
+  // -------------------------------------------------------------
+  // KRİTİK HTMX AYARI: HTMX varsayılan olarak 400/500 durum
+  // kodlarında swap yapmaz. Bu listener sayesinde hata mesajları
+  // da hedef div içine basılır.
+  // -------------------------------------------------------------
+  document.body.addEventListener('htmx:beforeSwap', function(evt) {
+    if(evt.detail.xhr.status >= 400){
+      evt.detail.shouldSwap = true;
+      evt.detail.isError = false;
+    }
+  });
+
+  {% block extra_script %}{% endblock %}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Video Yükle{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <div class="eyebrow">Modül 02</div>
+  <h2 class="brand-title mb-1">Video Logu Yükle</h2>
+  <p class="text-muted mb-0">Video dosyasını kameranın private key'iyle imzalar ve zincire yeni bir blok olarak ekler.</p>
+</div>
+
+<div class="row g-4">
+
+  <!-- ============================================================= -->
+  <!-- SOL: VIDEO YÜKLEME FORMU (htmx)                                -->
+  <!-- ============================================================= -->
+  <div class="col-lg-5">
+    <div class="panel-card">
+      <div class="panel-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+        </svg>
+      </div>
+      <div class="panel-title">Yeni Blok Ekle</div>
+      <div class="panel-desc">Dosya yüklendiğinde kamera doğrulanır, hash hesaplanır, imzalanır ve zincire eklenir.</div>
+
+      <!--
+        ÖNEMLİ: İşlem 200 OK ile başarılı dönerse hx-on::after-request
+        kısa bir gecikmeyle sayfayı yeniler; böylece hem başarı mesajı
+        görülür hem de sağdaki tablo güncel hâliyle yeniden yüklenir.
+      -->
+      <form hx-post="/api/video_yukle"
+            hx-encoding="multipart/form-data"
+            hx-target="#yukleme-sonuc"
+            hx-swap="innerHTML"
+            hx-on::after-request="if(event.detail.successful){ setTimeout(function(){ location.reload(); }, 1200); }">
+        <div class="mb-3">
+          <label for="videoKameraId">KameraID</label>
+          <input type="number" class="form-control" id="videoKameraId" name="KameraID" required>
+        </div>
+        <div class="mb-3">
+          <label for="videoPrivateKey">Private Key</label>
+          <textarea class="form-control" id="videoPrivateKey" name="PrivateKey" rows="4" autocomplete="off" required placeholder="-----BEGIN RSA PRIVATE KEY-----"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="videoDosya">Video Dosyası</label>
+          <input type="file" class="form-control" id="videoDosya" name="video" accept="video/*" required>
+        </div>
+        <button type="submit" class="btn btn-chain w-100">
+          Zincire Ekle <span class="htmx-indicator">···</span>
+        </button>
+        <div id="yukleme-sonuc" class="mt-3"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- SAĞ: ZİNCİR GEÇMİŞİ (LOG TABLOSU)                              -->
+  <!-- ============================================================= -->
+  <div class="col-lg-7">
+    <div class="ledger-wrap">
+      <div class="ledger-head">
+        <div>
+          <div class="eyebrow">Zincir Geçmişi</div>
+          <div class="panel-title mb-0">Blok Kayıtları</div>
+        </div>
+        <span class="stat-pill">Toplam Log: {{ loglar|length }}</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table ledger align-middle mb-0">
+          <thead>
+            <tr>
+              <th></th>
+              <th>LogID</th>
+              <th>Dosya Adı</th>
+              <th>KameraID</th>
+              <th>Zaman Damgası</th>
+              <th>SHA-256 Hash</th>
+              <th>Önceki Hash</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in loglar %}
+            <tr>
+              <td class="chain-cell">
+                <div class="chain-line"></div>
+                <div class="chain-dot"></div>
+              </td>
+              <td>#{{ log.LogID }}</td>
+              <td>{{ log.DosyaAdi }}</td>
+              <td>{{ log.KameraID }}</td>
+              <td>{{ log.ZamanDamgasi.strftime('%d.%m.%Y %H:%M:%S') if log.ZamanDamgasi is not string else log.ZamanDamgasi }}</td>
+              <td>
+                <span class="text-truncate d-inline-block hash-pill" title="{{ log.Sha256Hash }}">{{ log.Sha256Hash }}</span>
+              </td>
+              <td>
+                <span class="text-truncate d-inline-block hash-pill text-muted" title="{{ log.OncekiHash }}">{{ log.OncekiHash or '—' }}</span>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" class="text-center py-5 text-muted">
+                Henüz zincire eklenmiş bir kayıt yok. Soldaki formdan ilk video bloğunu yükleyin.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
