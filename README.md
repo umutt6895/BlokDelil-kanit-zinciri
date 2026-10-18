@@ -14,10 +14,9 @@ Sistem üç ana modülden oluşmaktadır:
 * **Backend:** Python, Flask
 * **Kriptografi ve Mimari:** SHA-256 Hashing, RSA Şifreleme, Blokzincir Veri Yapısı
 * **Frontend:** HTML5, CSS3, Bootstrap5, HTMX, Alpine.js
-* **Veritabanı:** MS SQL Server
+* **Veritabanı:** SQLite
 
-## Kurulum ve Çalıştırma
-Sistemi lokal ortamda ayağa kaldırmak için:
-1. Bu repoyu bilgisayarınıza klonlayın veya indirin.
-2. Gerekli Python kütüphanelerini kurun.
-3. Ana dizindeki `baslat.bat` dosyasını çalıştırarak sunucuyu başlatın ve tarayıcınızdan `http://127.0.0.1:5000` adresine gidin.
+## Çalıştırma
+Sistemi canlıda görmek için:
+https://blokdelil-kanit-zinciri.onrender.com/
+
